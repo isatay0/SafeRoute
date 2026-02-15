@@ -1,12 +1,29 @@
+// --- FIREBASE CONFIGURATION ---
+// Replace this with your actual config from Firebase Console -> Project Settings
+const firebaseConfig = {
+  apiKey: "AIzaSyAyK5yga38WSVshQ3_BYU7Jhw6_NUSuD_I",
+  authDomain: "saferoute-e947f.firebaseapp.com",
+  databaseURL: "https://saferoute-e947f-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "saferoute-e947f",
+  storageBucket: "saferoute-e947f.firebasestorage.app",
+  messagingSenderId: "80913663200",
+  appId: "1:80913663200:web:cb04a1fcbd17741ebb7c85",
+  measurementId: "G-PYCD9RD7M1"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// --- MAP & LOGIC VARIABLES ---
 const SHYMKENT = [42.3155, 69.5869];
-let INCIDENT_RADIUS = 0.2; // Base radius 200m
+let INCIDENT_RADIUS = 0.2;
 
 const map = L.map('map').setView(SHYMKENT, 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 let mode = "route", startPoint = null, endPoint = null;
 let startMarker = null, endMarker = null, fastLayer = null, safeLayer = null;
-let incidents = JSON.parse(localStorage.getItem("incidents_shy_v10")) || [];
+let incidents = []; // Now managed by Firebase
 let incidentMarkers = [];
 let debounceTimer;
 
@@ -21,11 +38,25 @@ slider.oninput = () => {
 
 function setMode(m) { mode = m; }
 
-// Global function to delete single incident from popup
-window.deleteIncident = function(index) {
-    incidents.splice(index, 1);
-    saveAndRender();
+// --- CLOUD DATA SYNC ---
+
+// Listen for changes from all users
+db.ref('incidents').on('value', (snapshot) => {
+    const data = snapshot.val();
+    // Firebase returns an object; we need an array for our logic
+    incidents = [];
+    if (data) {
+        Object.keys(data).forEach(key => {
+            incidents.push({ id: key, ...data[key] });
+        });
+    }
+    renderIncidentsOnMap();
     if (startPoint && endPoint) buildRoutes();
+});
+
+// Delete from Firebase
+window.deleteIncident = function(firebaseId) {
+    db.ref(`incidents/${firebaseId}`).remove();
 };
 
 map.on("click", e => {
@@ -33,17 +64,22 @@ map.on("click", e => {
         const desc = prompt("Event description:", "Danger zone");
         const r = prompt("Risk Level (1-10):", "10");
         if (desc && r) {
-            incidents.push({ lat: e.latlng.lat, lng: e.latlng.lng, risk: parseInt(r), desc: desc });
-            saveAndRender();
-            if (startPoint && endPoint) buildRoutes();
+            const newIncident = { 
+                lat: e.latlng.lat, 
+                lng: e.latlng.lng, 
+                risk: parseInt(r), 
+                desc: desc 
+            };
+            db.ref('incidents').push(newIncident); // Push to cloud
         }
     } else { handlePoints(e.latlng); }
 });
 
+// --- ROUTING LOGIC (Unchanged from original) ---
+
 function handlePoints(latlng) {
     if (!startPoint) {
         startPoint = latlng;
-        // Updated to dark blue
         startMarker = L.circleMarker(latlng, {color: '#0d47a1', radius: 8, fillOpacity: 0.8}).addTo(map);
     } else if (!endPoint) {
         endPoint = latlng;
@@ -86,7 +122,6 @@ async function buildRoutes() {
             }
         }
     }
-
     render(fast, finalRoute, isAbsolute);
 }
 
@@ -147,7 +182,7 @@ function render(fast, safe, isAbsolute) {
 
     fastLayer = L.geoJSON({type:"LineString", coordinates:fast.poly}, {style:{color:"#ccc", weight:3, opacity:0.3}}).addTo(map);
     
-    const routeColor = (isAbsolute && danger) ? "#b71c1c" : "#0d47a1"; // Dark Blue Safe Path
+    const routeColor = (isAbsolute && danger) ? "#b71c1c" : "#0d47a1"; 
     safeLayer = L.geoJSON({type:"LineString", coordinates:safe.poly}, {style:{color: routeColor, weight:6}}).addTo(map);
 
     let html = `<b>🏁 Distance: ${(safe.dist/1000).toFixed(2)} km</b><hr>`;
@@ -162,25 +197,23 @@ function render(fast, safe, isAbsolute) {
     document.getElementById("stats").innerHTML = html;
 }
 
-function saveAndRender() {
-    localStorage.setItem("incidents_shy_v10", JSON.stringify(incidents));
+function renderIncidentsOnMap() {
     incidentMarkers.forEach(m => map.removeLayer(m));
     
-    incidentMarkers = incidents.map((inc, index) => {
+    incidentMarkers = incidents.map((inc) => {
         const c = L.circle([inc.lat, inc.lng], {
             radius: INCIDENT_RADIUS*1000, 
-            color: '#b71c1c', // Dark Red for Danger
+            color: '#b71c1c', 
             fillOpacity: 0.2, 
             weight: 1
         }).addTo(map);
         
-        // Add Popup with Info + Delete Button
         const popupContent = `
             <div style="text-align:center; min-width: 120px;">
                 <b>${inc.desc}</b><br>
                 <span style="color:#b71c1c; font-weight:bold;">Risk Level: ${inc.risk}</span>
                 <br>
-                <button onclick="window.deleteIncident(${index})" class="popup-delete-btn">
+                <button onclick="window.deleteIncident('${inc.id}')" class="popup-delete-btn">
                     🗑 Delete Zone
                 </button>
             </div>
@@ -191,17 +224,20 @@ function saveAndRender() {
     });
 }
 
-function resetIncidents() { incidents = []; saveAndRender(); resetRoute(); }
+function resetIncidents() { 
+    if(confirm("Delete ALL global data?")) {
+        db.ref('incidents').set(null); 
+        resetRoute(); 
+    }
+} 
+
 function resetRoute() {
     [startMarker, endMarker, fastLayer, safeLayer].forEach(x => x && map.removeLayer(x));
     startPoint = endPoint = null;
     document.getElementById("stats").innerText = "Select points on map.";
 }
 
-// Fix for map display on mobile/resize
 window.addEventListener('resize', function() {
     setTimeout(function(){ map.invalidateSize(); }, 400);
 });
 setTimeout(function(){ map.invalidateSize(); }, 100);
-
-saveAndRender();
