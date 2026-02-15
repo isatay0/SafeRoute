@@ -1,0 +1,141 @@
+/* GLOBAL SETTINGS */
+body { 
+    margin: 0; 
+    padding: 0;
+    display: flex; 
+    height: 100vh; 
+    width: 100vw;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: #f4f4f4; 
+    overflow: hidden; 
+}
+
+/* SIDEBAR - Custom Deep Indigo #110c30 */
+#sidebar {
+    width: 320px; 
+    background: #110c30; /* Your requested color */
+    color: white; 
+    padding: 15px; 
+    box-shadow: 4px 0 15px rgba(0,0,0,0.4); 
+    z-index: 1000;
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px;
+    box-sizing: border-box;
+    overflow-y: auto; 
+    border-right: 1px solid #2a2355; /* Subtle border for definition */
+}
+
+/* HEADER & LOGO */
+.header { 
+    display: flex; 
+    justify-content: space-between;
+    align-items: center; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    padding-bottom: 10px; 
+    margin-bottom: 5px;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+
+/* LOGO - KEPT AT 50px */
+.logo { 
+    width: 50px; 
+    height: 50px; 
+    object-fit: contain; 
+}
+
+h2 { margin: 0; font-size: 1.4rem; color: #ffffff; letter-spacing: 0.5px; }
+
+/* CONTROLS */
+.controls-container { display: flex; flex-wrap: wrap; gap: 10px; }
+.control-group { margin-bottom: 5px; }
+.full-width { width: 100%; }
+.half-width { width: calc(50% - 5px); } 
+
+label { 
+    display: block; margin-bottom: 6px; font-weight: 600; 
+    color: #c5cae9; /* Light lavender text for labels */
+    font-size: 0.85rem; 
+}
+
+select { 
+    width: 100%; padding: 10px; border-radius: 6px; 
+    border: 1px solid #3949ab; 
+    background: #1a237e; /* Slightly lighter blue for inputs */
+    color: white; 
+    font-size: 14px; 
+    outline: none;
+}
+
+/* BUTTONS */
+.button-group {
+    display: flex; flex-wrap: wrap; gap: 8px; width: 100%;
+}
+
+button {
+    flex: 1; padding: 12px; cursor: pointer; border: none;
+    border-radius: 6px; font-weight: 600; color: white; 
+    transition: 0.2s; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    white-space: nowrap; min-width: 80px;
+}
+
+/* Bright Electric Blue to contrast with #110c30 */
+.btn-primary { background: #304ffe; } 
+.btn-primary:hover { background: #536dfe; }
+
+.btn-danger { background: #d32f2f; }
+.btn-danger:hover { background: #ef5350; }
+
+.btn-secondary { 
+    flex-basis: 100%; background: #3949ab; margin-top: 4px; 
+}
+.btn-secondary:hover { background: #5c6bc0; }
+
+/* SLIDER */
+.styled-slider {
+    -webkit-appearance: none; width: 100%; height: 8px;
+    background: rgba(255,255,255,0.1); 
+    border-radius: 5px; outline: none;
+    margin-top: 5px;
+}
+.styled-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    background: #536dfe; 
+    border: 2px solid #110c30; 
+    border-radius: 50%; cursor: pointer;
+}
+
+/* STATS BOX */
+.stats {
+    background: rgba(0, 0, 0, 0.3); /* Dark transparent box */
+    padding: 15px; border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px; margin-top: auto; 
+    font-size: 0.9rem; line-height: 1.5; color: #e8eaf6;
+}
+
+/* POPUP BUTTON (Inside Map) */
+.popup-delete-btn {
+    background: #b71c1c; color: white; border: none; 
+    padding: 5px 10px; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; margin-top: 8px; width: 100%;
+}
+
+/* MAP */
+#map { flex-grow: 1; height: 100%; width: 100%; }
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+    body { flex-direction: column-reverse; }
+    #sidebar {
+        width: 100%; height: auto; max-height: 45vh;
+        padding: 10px; box-shadow: 0 -4px 15px rgba(0,0,0,0.4);
+        border-top: 1px solid #304ffe;
+    }
+    #map { height: 55vh; }
+    .header { display: none; }
+    .controls-container { gap: 8px; }
+    button { padding: 10px 5px; font-size: 0.8rem; }
+    .stats { display: none; }
+}

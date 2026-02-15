@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SafeRoute Shymkent</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="header">
+        <div class="brand">
+            <img src="logo.png" alt="SafeRoute Logo" class="logo">
+            <h2>SafeRoute</h2>
+        </div>
+    </div>
+    
+    <div class="controls-container">
+        <div class="control-group half-width">
+            <label>Mode</label>
+            <select id="travelMode" onchange="buildRoutes()">
+                <option value="driving">🚗 Drive</option>
+                <option value="walking">🚶 Walk</option>
+            </select>
+        </div>
+
+        <div class="control-group half-width">
+            <label>Action</label>
+            <select id="modeSelect" onchange="setMode(this.value)">
+                <option value="route">🚩 Route</option>
+                <option value="incident">🔥 Risk</option>
+            </select>
+        </div>
+
+        <div class="control-group full-width">
+            <label>Safety Priority: <span id="riskValue">50%</span></label>
+            <input type="range" id="riskWeight" min="0" max="100" value="50" class="styled-slider">
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="buildRoutes()">🔄 Route</button>
+            <button class="btn-danger" onclick="resetIncidents()">🗑 Risks</button>
+            <button class="btn-secondary" onclick="resetRoute()">❌ Reset</button>
+        </div>
+    </div>
+
+    <div id="stats" class="stats">
+        Select points on the map...
+    </div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
