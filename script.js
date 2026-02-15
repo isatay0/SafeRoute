@@ -1,5 +1,3 @@
-// --- FIREBASE CONFIGURATION ---
-// Replace this with your actual config from Firebase Console -> Project Settings
 const firebaseConfig = {
   apiKey: "AIzaSyAyK5yga38WSVshQ3_BYU7Jhw6_NUSuD_I",
   authDomain: "saferoute-e947f.firebaseapp.com",
@@ -14,7 +12,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- MAP & LOGIC VARIABLES ---
 const SHYMKENT = [42.3155, 69.5869];
 let INCIDENT_RADIUS = 0.2;
 
@@ -23,7 +20,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 let mode = "route", startPoint = null, endPoint = null;
 let startMarker = null, endMarker = null, fastLayer = null, safeLayer = null;
-let incidents = []; // Now managed by Firebase
+let incidents = [];
 let incidentMarkers = [];
 let debounceTimer;
 
@@ -38,12 +35,8 @@ slider.oninput = () => {
 
 function setMode(m) { mode = m; }
 
-// --- CLOUD DATA SYNC ---
-
-// Listen for changes from all users
 db.ref('incidents').on('value', (snapshot) => {
     const data = snapshot.val();
-    // Firebase returns an object; we need an array for our logic
     incidents = [];
     if (data) {
         Object.keys(data).forEach(key => {
@@ -54,7 +47,6 @@ db.ref('incidents').on('value', (snapshot) => {
     if (startPoint && endPoint) buildRoutes();
 });
 
-// Delete from Firebase
 window.deleteIncident = function(firebaseId) {
     db.ref(`incidents/${firebaseId}`).remove();
 };
@@ -70,12 +62,10 @@ map.on("click", e => {
                 risk: parseInt(r), 
                 desc: desc 
             };
-            db.ref('incidents').push(newIncident); // Push to cloud
+            db.ref('incidents').push(newIncident);
         }
     } else { handlePoints(e.latlng); }
 });
-
-// --- ROUTING LOGIC (Unchanged from original) ---
 
 function handlePoints(latlng) {
     if (!startPoint) {

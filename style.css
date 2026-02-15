@@ -1,4 +1,3 @@
-/* GLOBAL SETTINGS */
 body { 
     margin: 0; 
     padding: 0;
@@ -10,10 +9,9 @@ body {
     overflow: hidden; 
 }
 
-/* SIDEBAR - Custom Deep Indigo #110c30 */
 #sidebar {
     width: 320px; 
-    background: #110c30; /* Your requested color */
+    background: #110c30;
     color: white; 
     padding: 15px; 
     box-shadow: 4px 0 15px rgba(0,0,0,0.4); 
@@ -23,10 +21,9 @@ body {
     gap: 12px;
     box-sizing: border-box;
     overflow-y: auto; 
-    border-right: 1px solid #2a2355; /* Subtle border for definition */
+    border-right: 1px solid #2a2355;
 }
 
-/* HEADER & LOGO */
 .header { 
     display: flex; 
     justify-content: space-between;
@@ -38,7 +35,6 @@ body {
 
 .brand { display: flex; align-items: center; gap: 12px; }
 
-/* LOGO - KEPT AT 50px */
 .logo { 
     width: 50px; 
     height: 50px; 
@@ -47,7 +43,6 @@ body {
 
 h2 { margin: 0; font-size: 1.4rem; color: #ffffff; letter-spacing: 0.5px; }
 
-/* CONTROLS */
 .controls-container { display: flex; flex-wrap: wrap; gap: 10px; }
 .control-group { margin-bottom: 5px; }
 .full-width { width: 100%; }
@@ -55,20 +50,19 @@ h2 { margin: 0; font-size: 1.4rem; color: #ffffff; letter-spacing: 0.5px; }
 
 label { 
     display: block; margin-bottom: 6px; font-weight: 600; 
-    color: #c5cae9; /* Light lavender text for labels */
+    color: #c5cae9;
     font-size: 0.85rem; 
 }
 
 select { 
     width: 100%; padding: 10px; border-radius: 6px; 
     border: 1px solid #3949ab; 
-    background: #1a237e; /* Slightly lighter blue for inputs */
+    background: #1a237e;
     color: white; 
     font-size: 14px; 
     outline: none;
 }
 
-/* BUTTONS */
 .button-group {
     display: flex; flex-wrap: wrap; gap: 8px; width: 100%;
 }
@@ -81,7 +75,6 @@ button {
     white-space: nowrap; min-width: 80px;
 }
 
-/* Bright Electric Blue to contrast with #110c30 */
 .btn-primary { background: #304ffe; } 
 .btn-primary:hover { background: #536dfe; }
 
@@ -93,7 +86,6 @@ button {
 }
 .btn-secondary:hover { background: #5c6bc0; }
 
-/* SLIDER */
 .styled-slider {
     -webkit-appearance: none; width: 100%; height: 8px;
     background: rgba(255,255,255,0.1); 
@@ -107,25 +99,21 @@ button {
     border-radius: 50%; cursor: pointer;
 }
 
-/* STATS BOX */
 .stats {
-    background: rgba(0, 0, 0, 0.3); /* Dark transparent box */
+    background: rgba(0, 0, 0, 0.3);
     padding: 15px; border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 6px; margin-top: auto; 
     font-size: 0.9rem; line-height: 1.5; color: #e8eaf6;
 }
 
-/* POPUP BUTTON (Inside Map) */
 .popup-delete-btn {
     background: #b71c1c; color: white; border: none; 
     padding: 5px 10px; border-radius: 4px; cursor: pointer;
     font-size: 0.8rem; margin-top: 8px; width: 100%;
 }
 
-/* MAP */
 #map { flex-grow: 1; height: 100%; width: 100%; }
 
-/* MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
     body { flex-direction: column-reverse; }
     #sidebar {
