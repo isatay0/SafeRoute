@@ -44,7 +44,6 @@ window.deleteIncident = function(localId) {
     incidents = incidents.filter(inc => inc.id !== localId);
     saveIncidents();
 };
-/* ---------------------------------------------- */
 
 slider.oninput = () => {
     sliderValue.innerText = slider.value + "%";
